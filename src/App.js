@@ -6,16 +6,20 @@ import Home from './Home';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import WithoutNav from './WithoutNav';
 import WithNav from "./WithNav";
-
-
 import { useState, useEffect } from 'react';
 import { createClient } from "@supabase/supabase-js";
+import Form from './Form';
 
+const sb_url = process.env.REACT_APP_SB_URL
+const sb_key = process.env.REACT_APP_SB_KEY
 
 export const supabase = createClient(
-  "https://lhazbpfnwoiasaecxchh.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoYXpicGZud29pYXNhZWN4Y2hoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDM2Njc1ODAsImV4cCI6MjAxOTI0MzU4MH0.RFGj3VJETcTDGQhctuDmHsvcxCoQ4fLvhncV2PpjyHw"
+  sb_url,
+  sb_key
+
 );
+
+
 
 function App() {
 
@@ -32,6 +36,7 @@ function App() {
       setSession(session);
     });
 
+    
     return () => subscription.unsubscribe()
   }, [])
 
@@ -47,6 +52,7 @@ function App() {
             <Route path="/editor" element={<Editor />} />
             <Route path="/myforms" element={<MyForms />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/createForm' element={<Form />} />
           </Route>
         </Routes>
       </div>
