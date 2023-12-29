@@ -73,7 +73,7 @@ function Form() {
                   console.error("Error Occured : ",error)
                 }
               })
-            }).then(() => navigate('/editor'))
+            }).then(() => navigate('/myforms'))
             
             
           }}

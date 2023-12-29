@@ -12,6 +12,16 @@ module.exports = {
         red: "#fe9393",
         yellow: "#fff38a",
       },
+      backgroundImage: {
+        black:
+          "url('/Users/aakashsuresh/Developer/reform/src/assets/image.jpeg')",
+        blue: "url('/Users/aakashsuresh/Developer/reform/src/assets/image2.jpeg')",
+        purple:
+          "url('/Users/aakashsuresh/Developer/reform/src/assets/image3.jpeg')",
+        redish: "url('/Users/aakashsuresh/Developer/reform/src/assets/image4.jpeg')",
+        violet:
+          "url('/Users/aakashsuresh/Developer/reform/src/assets/image5.jpeg')",
+      },
     },
   },
   plugins: [],
