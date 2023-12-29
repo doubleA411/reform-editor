@@ -16,7 +16,6 @@ const sb_key = process.env.REACT_APP_SB_KEY
 export const supabase = createClient(
   sb_url,
   sb_key
-
 );
 
 
@@ -41,9 +40,9 @@ function App() {
   }, [])
 
   
-  
-
   return (
+
+    <>
     <Router>
       <div className=" bg-slate-100 min-h-screen sm:hidden lg:block">
         <Routes>
@@ -57,6 +56,8 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </>
+    
   );
 }
 

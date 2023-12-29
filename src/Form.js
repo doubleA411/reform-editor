@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { preprocess } from './test';
-// import { supabase } from './App'
+import { supabase } from './supabase'
+import { useNavigate } from 'react-router-dom'
+import { useUser } from './UserProvider';
 
-import { createClient } from "@supabase/supabase-js";
 
-// Initialize Supabase client
-const sb_url = process.env.REACT_APP_SB_URL;
-const sb_key = process.env.REACT_APP_SB_KEY;
-
-export const supabase = createClient(sb_url, sb_key);
 
 
 // Check if a user is logged in
@@ -19,14 +15,15 @@ const form = "https://docs.google.com/forms/d/e/1FAIpQLSe6QkinSfvuI6P5Dg-L-J9uAA
           
 function Form() {
 
+  const navigate = useNavigate();
+  const authUser = useUser();
   const [ url, setUrl] = useState("")
   const [ title, setTitle] = useState("")
   const [currUser, setCurrUser] = useState("");
-  const [userMail ,setUserMail] = useState("") 
   useEffect(()=> {
+    // console.log(authUser)
     if(user) {
       setCurrUser(user.id)
-      setUserMail(user.email)
     }
   },[])
     return (
@@ -57,9 +54,26 @@ function Form() {
               console.log("action url : ",data.url)
               console.log("og url : ",url)
               data.entries.forEach((entry) => console.log(entry))
-              console.log("user mail : ",userMail)
               console.log("user id: ", currUser)
-            })
+              
+              data.entries.forEach(async (entry) =>  {
+                const {res,error} = await supabase
+                .from('formdata').insert([{
+                  title: title,
+                  form_id : data.id,
+                  uid: currUser,
+                  url: url,
+                  action_url : data.url,
+                  entry_name : entry.entry_name,
+                  entry_id : entry.entry_id
+                }])
+                if(res) {
+                  console.log("Successfully inserted data")
+                } else {
+                  console.error("Error Occured : ",error)
+                }
+              })
+            }).then(() => navigate('/editor'))
             
             
           }}
