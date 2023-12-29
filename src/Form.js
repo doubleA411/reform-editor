@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { preprocess } from './test';
 import { supabase } from './supabase'
 import { useNavigate } from 'react-router-dom'
-import { useUser } from './UserProvider';
+// import { useUser } from './UserProvider';
 
 
 
@@ -11,12 +11,12 @@ import { useUser } from './UserProvider';
 const { data : { user } } = await supabase.auth.getUser();
 
 
-const form = "https://docs.google.com/forms/d/e/1FAIpQLSe6QkinSfvuI6P5Dg-L-J9uAAEeL9AMV2uBQViT0H3nuntF-Q/viewform?usp=pp_url&entry.469246373=Name&entry.1403942219=Unique+ID&entry.829537125=Email+ID&entry.1178935119=Phone+number";
+// const form = "https://docs.google.com/forms/d/e/1FAIpQLSe6QkinSfvuI6P5Dg-L-J9uAAEeL9AMV2uBQViT0H3nuntF-Q/viewform?usp=pp_url&entry.469246373=Name&entry.1403942219=Unique+ID&entry.829537125=Email+ID&entry.1178935119=Phone+number";
           
 function Form() {
 
   const navigate = useNavigate();
-  const authUser = useUser();
+  // const authUser = useUser();
   const [ url, setUrl] = useState("")
   const [ title, setTitle] = useState("")
   const [currUser, setCurrUser] = useState("");

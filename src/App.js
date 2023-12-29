@@ -42,7 +42,7 @@ function App() {
   
   return (
 
-    <>
+    
     <Router>
       <div className=" bg-slate-100 min-h-screen sm:hidden lg:block">
         <Routes>
@@ -56,7 +56,7 @@ function App() {
         </Routes>
       </div>
     </Router>
-    </>
+  
     
   );
 }

@@ -17,9 +17,6 @@ function Navbar() {
         <Link to={'/'}>
         <p className=" cursor-pointer">Home</p>
         </Link>
-        <Link to={'/editor'}>
-        <p className=" cursor-pointer">Editor</p>
-        </Link>
         <Link to={'/myforms'}>
         <p className=" cursor-pointer">My Forms</p>
         </Link>

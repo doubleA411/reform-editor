@@ -3,15 +3,28 @@ import { supabase } from "./supabase";
 
 export const FormDataContext = createContext();
 
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 
 
-
-export const FormDataProvider = ({ children, userId }) => {
+export const FormDataProvider = ({ children}) => {
   const [formData, setFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Track loading state
   const [error, setError] = useState(null); // Track errors
 
-
+ const fetchData = async () => {
+   try {
+     const data = await fetchFormData(user.id);
+     setFormData(data);
+     localStorage.setItem("formData", JSON.stringify(data)); // Store data in local storage
+   } catch (error) {
+     setError(error);
+     console.error("Error fetching data:", error);
+   } finally {
+     setIsLoading(false);
+   }
+ };
     useEffect(() => {
       const storedFormData = localStorage.getItem("formData");
       if (storedFormData) {
@@ -20,22 +33,12 @@ export const FormDataProvider = ({ children, userId }) => {
       } else {
         fetchData();
       }
-    },);
+    },[]);
 
-    const fetchData = async () => {
-      try {
-        const data = await fetchFormData(userId);
-        setFormData(data);
-        localStorage.setItem("formData", JSON.stringify(data)); // Store data in local storage
-      } catch (error) {
-        setError(error);
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+   
 
   useEffect(()=> {
+    fetchData()
     const intervalId = setInterval(fetchData, 10000);
     return () => clearInterval(intervalId)
   },[])
@@ -69,7 +72,7 @@ const fetchFormData = async (userId) => {
 
     // Check if data is available
     if (data && data.length > 0) {
-      console.log("Data retrieved:", data);
+      // console.log("Data retrieved:", data);
       const acc = {};
       data.reduce((acc, item) => {
         acc[item.form_id] = acc[item.form_id] || {
