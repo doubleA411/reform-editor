@@ -105,7 +105,9 @@ const data = formData.filter((d) => handleFilter(d.form_id))
               value={form.color}
             >
               {colors.map((c, idx) => (
-                <option key={idx} value={c}>Color {idx}</option>
+                <option key={idx} value={c}>
+                  Color {idx}
+                </option>
               ))}
             </select>
           </div>
@@ -124,7 +126,6 @@ const data = formData.filter((d) => handleFilter(d.form_id))
               <option value={480}>Medium</option>
               <option value={560}>Large</option>
             </select>
-           
           </div>
           {/* size */}
 
@@ -146,7 +147,10 @@ const data = formData.filter((d) => handleFilter(d.form_id))
           </div>
           {/* bgColor */}
 
-          <div onClick={() => handleDraft()} className=" flex justify-center w-full h-fit bg-black-100 text-slate-200 p-5 rounded-xl text-lg cursor-pointer">
+          <div
+            onClick={() => handleDraft()}
+            className=" flex justify-center w-full h-fit bg-black-100 text-slate-200 p-5 rounded-xl text-lg cursor-pointer"
+          >
             Save Draft
           </div>
         </div>
@@ -190,11 +194,12 @@ const data = formData.filter((d) => handleFilter(d.form_id))
                   <input type="submit" />
                 </div>
               </form>
-             
 
-              <div className=" absolute bottom-10 right-10 text-white-200 bg-black-100 py-3 px-10 rounded-xl cursor-pointer border-2  m-10">
-                Preview
-              </div>
+              <a href={`/preview?id=${id}`}>
+                <div className=" absolute bottom-10 right-10 text-white-200 bg-black-100 py-3 px-10 rounded-xl cursor-pointer border-2  m-10">
+                  Preview
+                </div>
+              </a>
             </div>
           </div>
         </div>

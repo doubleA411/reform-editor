@@ -9,6 +9,7 @@ import WithNav from "./WithNav";
 import { useState, useEffect } from 'react';
 import { createClient } from "@supabase/supabase-js";
 import Form from './Form';
+import Preview from './Preview';
 
 const sb_url = process.env.REACT_APP_SB_URL
 const sb_key = process.env.REACT_APP_SB_KEY
@@ -41,23 +42,21 @@ function App() {
 
   
   return (
-
-    
     <Router>
       <div className=" bg-slate-100 min-h-screen sm:hidden lg:block">
         <Routes>
-          <Route element={ !session ? <WithoutNav /> : <WithNav />}>
-            <Route path="/" element={ !session ? <Login /> : <Home />} />
+          <Route element={!session || window.location.pathname === '/preview' ? <WithoutNav /> : <WithNav />}>
+            <Route path="/" element={!session ? <Login /> : <Home />} />
             <Route path="/editor" element={<Editor />} />
+            <Route path="/preview" element={<Preview />} />
+
             <Route path="/myforms" element={<MyForms />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/createForm' element={<Form />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/createForm" element={<Form />} />
           </Route>
         </Routes>
       </div>
     </Router>
-  
-    
   );
 }
 
