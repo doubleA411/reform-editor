@@ -1,4 +1,4 @@
-import { useState, useContext} from 'react'
+import { useContext} from 'react'
 import edit from "./assets/edit.png";
 import link from "./assets/link.png";
 // import { supabase } from './supabase';
@@ -17,7 +17,8 @@ function FormData() {
 
    const { formData, isLoading, error } = useContext(FormDataContext);
 
-   const [data , setData] = useState([])
+   
+
 
    // const [ authUser, setUser ] = useState("");
    
@@ -47,7 +48,7 @@ function FormData() {
             </div>
           </div>
         ))}
-      {!data && <p>No data</p>}
+      {!formData && <p>No data</p>}
     </div>
   );
 }

@@ -19,7 +19,7 @@ export const FormDataProvider = ({ children}) => {
      setFormData(data);
      localStorage.setItem("formData", JSON.stringify(data)); // Store data in local storage
    } catch (error) {
-     setError(error);
+     setError(error); 
      console.error("Error fetching data:", error);
    } finally {
      setIsLoading(false);

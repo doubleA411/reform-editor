@@ -17,6 +17,7 @@ const [form, setForm] = useState({
   color: "bg-yellow",
   size: 390,
   bgcolor: "bg-black",
+  opacity: 0,
 });
 
 const handleForm = (e) => {
@@ -26,7 +27,28 @@ const handleForm = (e) => {
   })
 }
 
+const handleDraft = () => {
+  const formSettings = localStorage.getItem(id);
+  if(formSettings){
+    localStorage.removeItem(id)
+  localStorage.setItem(id, JSON.stringify(form));
 
+  } else {
+
+    localStorage.setItem(id,JSON.stringify(form))
+  }
+
+}
+
+
+const handleSettings = () => {
+ const formSettings = localStorage.getItem(id);
+ if (formSettings) {
+   console.log(JSON.parse(formSettings));
+   setForm(JSON.parse(formSettings));
+   console.log(form)
+ }
+}
   //  const data = localStorage.getItem("formdata");
 
 const handleFilter = (formId) => {
@@ -34,11 +56,9 @@ const handleFilter = (formId) => {
   } 
 const data = formData.filter((d) => handleFilter(d.form_id))
 
-  // console.log(data)
-
-//  const data = formData.find(
-//    ([form_id]) => form_id === id
-//  );
+ useEffect(() => {
+   handleSettings();
+ }, []);
  
   useEffect(() => {
     const formElement = document.getElementById("form");
@@ -46,6 +66,8 @@ const data = formData.filter((d) => handleFilter(d.form_id))
   }, [form]);
 
 
+
+ 
   const colors = ['bg-red','bg-cyan','bg-yellow','bg-barbie','bg-slate-200', 'backdrop-blur-md']
   const bg = [
     "bg-black",
@@ -64,10 +86,10 @@ const data = formData.filter((d) => handleFilter(d.form_id))
         <div className=" w-1/4 flex flex-col items-start px-7 pt-10 gap-8">
           <div className=" w-full h-fit text-black-100 bg-white-200 p-5 rounded-xl text-lg">
             <input
-            disabled
+              disabled
               type="text"
               placeholder="Title"
-              className="w-full outline-none"
+              className="w-full outline-none disabled:bg-transparent"
               value={data[0].title}
             />
           </div>
@@ -83,7 +105,7 @@ const data = formData.filter((d) => handleFilter(d.form_id))
               value={form.color}
             >
               {colors.map((c, idx) => (
-                <option value={c}>Color {idx}</option>
+                <option key={idx} value={c}>Color {idx}</option>
               ))}
             </select>
           </div>
@@ -102,11 +124,11 @@ const data = formData.filter((d) => handleFilter(d.form_id))
               <option value={480}>Medium</option>
               <option value={560}>Large</option>
             </select>
-            {/* <div className=" cursor-pointer " >SM</div>
-            <div className=" cursor-pointer  ">MD</div>
-            <div className=" cursor-pointer  ">LG</div> */}
+           
           </div>
+          {/* size */}
 
+          {/* bgColor */}
           <div className=" flex items-start w-full h-fit bg-white-200 p-3 rounded-xl">
             <select
               name="bgcolor"
@@ -116,27 +138,15 @@ const data = formData.filter((d) => handleFilter(d.form_id))
               value={form.bg}
             >
               {bg.map((c, idx) => (
-                <option value={c}>
-                  <p>Color {idx}</p>
+                <option key={idx} value={c}>
+                  Color {idx}
                 </option>
               ))}
             </select>
           </div>
-          {/* size */}
+          {/* bgColor */}
 
-          {/* opacity */}
-          <div className="w-full h-fit text-black-100 bg-white-200 p-5 rounded-xl text-lg">
-            {" "}
-            <input
-              title="Opacity"
-              type="range"
-              placeholder="Opacity"
-              className="w-full outline-none accent-black-100"
-            />
-          </div>
-          {/* opacity */}
-
-          <div className=" flex justify-center w-full h-fit bg-black-100 text-slate-200 p-5 rounded-xl text-lg cursor-pointer">
+          <div onClick={() => handleDraft()} className=" flex justify-center w-full h-fit bg-black-100 text-slate-200 p-5 rounded-xl text-lg cursor-pointer">
             Save Draft
           </div>
         </div>
@@ -145,7 +155,8 @@ const data = formData.filter((d) => handleFilter(d.form_id))
         <div className=" w-[1px] min-h-screen bg-black-100"> </div>
         <div className=" w-3/4">
           <div
-            className={` flex items-center justify-center h-[700px] ${form.bgcolor} border-2 m-10 rounded-xl`}
+            id="formbg"
+            className={` flex items-center justify-center h-[700px] ${form.bgcolor} border-2 m-10 rounded-xl relative`}
           >
             <div
               id="form"
@@ -179,15 +190,7 @@ const data = formData.filter((d) => handleFilter(d.form_id))
                   <input type="submit" />
                 </div>
               </form>
-              {/* <div>
-                <p>Name</p>
-                <div className="">
-                  <input
-                    type="text"
-                    className="outline-none p-3 rounded-md mt-2 w-full "
-                  />
-                </div>
-              </div> */}
+             
 
               <div className=" absolute bottom-10 right-10 text-white-200 bg-black-100 py-3 px-10 rounded-xl cursor-pointer border-2  m-10">
                 Preview

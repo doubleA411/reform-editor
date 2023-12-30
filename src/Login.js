@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
 import image from "./assets/image.jpeg";
 import mm from './assets/mm.png';
-import { Link } from 'react-router-dom';
 import { supabase } from './App';
 
-import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
