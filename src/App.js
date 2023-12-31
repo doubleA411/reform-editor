@@ -45,10 +45,18 @@ function App() {
     <Router>
       <div className=" bg-slate-100 min-h-screen sm:hidden lg:block">
         <Routes>
-          <Route element={!session || window.location.pathname === '/preview' ? <WithoutNav /> : <WithNav />}>
+          <Route
+            element={
+              !session || window.location.pathname.includes('/preview') ? (
+                <WithoutNav />
+              ) : (
+                <WithNav />
+              )
+            }
+          >
             <Route path="/" element={!session ? <Login /> : <Home />} />
             <Route path="/editor" element={<Editor />} />
-            <Route path="/preview" element={<Preview />} />
+            <Route path="/preview/:id" element={<Preview />} />
 
             <Route path="/myforms" element={<MyForms />} />
             <Route path="/login" element={<Login />} />

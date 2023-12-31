@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect, useContext } from "react";
+import { supabase } from './supabase';
 
 import { FormDataContext, FormDataProvider } from "./FormDataContext";
 
@@ -11,13 +12,22 @@ const id = urlParams.get('id');
 // console.log(id)
 
 const { formData, isLoading, error } = useContext(FormDataContext);
-// const [color, setColor] = useState('bg-yellow');
-// const [size, setSize] = useState(390)
+
+const handleFilter = (formId) => {
+  return formId === id;
+};
+const data = formData.filter((d) => handleFilter(d.form_id));
+// console.log(data[0].entries)
+
 const [form, setForm] = useState({
   color: "bg-yellow",
   size: 390,
   bgcolor: "bg-black",
-  opacity: 0,
+  title: data[0].title,
+  entries : data[0].entries,
+  form_id : id,
+  action_url : data[0].action_url
+  
 });
 
 const handleForm = (e) => {
@@ -27,7 +37,7 @@ const handleForm = (e) => {
   })
 }
 
-const handleDraft = () => {
+const handleDraft = async () => {
   const formSettings = localStorage.getItem(id);
   if(formSettings){
     localStorage.removeItem(id)
@@ -38,6 +48,22 @@ const handleDraft = () => {
     localStorage.setItem(id,JSON.stringify(form))
   }
 
+  const { res, error } = await supabase.from("publicform").insert([
+    {
+      color: form.color,
+      size: form.size,
+      bgcolor: form.bgcolor,
+      title: data[0].title,
+      entries: data[0].entries,
+      form_id: id,
+      action_url: data[0].action_url,
+    },
+  ]);
+  if(res) {
+    console.log(res)
+  } else {
+    console.log(error)
+  }
 }
 
 
@@ -51,10 +77,7 @@ const handleSettings = () => {
 }
   //  const data = localStorage.getItem("formdata");
 
-const handleFilter = (formId) => {
-      return formId === id
-  } 
-const data = formData.filter((d) => handleFilter(d.form_id))
+
 
  useEffect(() => {
    handleSettings();
@@ -195,8 +218,8 @@ const data = formData.filter((d) => handleFilter(d.form_id))
                 </div>
               </form>
 
-              <a href={`/preview?id=${id}`}>
-                <div className=" absolute bottom-10 right-10 text-white-200 bg-black-100 py-3 px-10 rounded-xl cursor-pointer border-2  m-10">
+              <a href={`/preview/${id}`}>
+                <div className=" absolute bottom-5 right-5 text-white-200  py-3 px-10 backdrop-blur-xl rounded-xl cursor-pointer border-2 ">
                   Preview
                 </div>
               </a>
