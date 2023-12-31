@@ -1,6 +1,6 @@
 import {useState, useRef,useEffect} from 'react'
 import { Link } from 'react-router-dom';
-import Form from './Form';
+import AddForm from './AddForm';
 
 function CreateBtn() {
   const [showModal, setShowModal] = useState(false);
@@ -47,7 +47,7 @@ function CreateBtn() {
 
       {showModal && (
         <div ref={modalRef}>
-          <Form />
+          <AddForm />
         </div>
       )}
     </div>

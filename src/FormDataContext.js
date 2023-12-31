@@ -8,51 +8,54 @@ const {
 } = await supabase.auth.getUser();
 
 
-export const FormDataProvider = ({ children}) => {
+export const FormDataProvider = ({ children }) => {
   const [formData, setFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Track loading state
   const [error, setError] = useState(null); // Track errors
 
- const fetchData = async () => {
-   try {
-     const data = await fetchFormData(user.id);
-     setFormData(data);
-     localStorage.setItem("formData", JSON.stringify(data)); // Store data in local storage
-   } catch (error) {
-     setError(error); 
-     console.error("Error fetching data:", error);
-   } finally {
-     setIsLoading(false);
-   }
- };
-    useEffect(() => {
-      const storedFormData = localStorage.getItem("formData");
-      if (storedFormData) {
-        setFormData(JSON.parse(storedFormData));
-        setIsLoading(false);
-      } else {
-        fetchData();
-      }
-    },[]);
+  const fetchData = async () => {
+    try {
+      const data = await fetchFormData(user.id);
+      setFormData(data);
+      localStorage.setItem("formData", JSON.stringify(data)); // Store data in local storage
+    } catch (error) {
+      setError(error);
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-   
+  useEffect(() => {
+    const storedFormData = localStorage.getItem("formData");
+    if (storedFormData) {
+      setFormData(JSON.parse(storedFormData));
+      setIsLoading(false);
+    } else {
+      fetchData();
+    }
+  }, []);
 
-  useEffect(()=> {
-    fetchData()
+  useEffect(() => {
+    fetchData();
     const intervalId = setInterval(fetchData, 10000);
-    return () => clearInterval(intervalId)
-  },[])
+    return () => clearInterval(intervalId);
+  }, []);
 
-  
+  // Display loading message until data is fetched
+  if (isLoading) {
+    return <div>Loading form data...</div>;
+  }
+
+  // Display error message if an error occurred
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  // When data is loaded and no errors
   return (
     <FormDataContext.Provider value={{ formData, isLoading, error }}>
-      {isLoading ? (
-        <div>Loading form data...</div>
-      ) : error ? (
-        <div>Error: {error.message}</div>
-      ) : (
-        children
-      )}
+      {children}
     </FormDataContext.Provider>
   );
 };

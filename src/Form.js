@@ -1,119 +1,99 @@
-import React, { useEffect, useState } from 'react'
-import { preprocess } from './test';
-import { supabase } from './supabase'
-import { useNavigate } from 'react-router-dom'
-// import { useUser } from './UserProvider';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { supabase } from "./supabase";
 
+// {id : form_id, color : color, bgcolor : bgcolor, size : size, title : title, entries : [{},{}...]}
 
+ function Form() {
 
+  const [form, setForm] = useState({});
 
-// Check if a user is logged in
-const { data : { user } } = await supabase.auth.getUser();
+// const form = localStorage.getItem("formData")
+// console.log(form);
 
+const { id } = useParams();
 
-// const form = "https://docs.google.com/forms/d/e/1FAIpQLSe6QkinSfvuI6P5Dg-L-J9uAAEeL9AMV2uBQViT0H3nuntF-Q/viewform?usp=pp_url&entry.469246373=Name&entry.1403942219=Unique+ID&entry.829537125=Email+ID&entry.1178935119=Phone+number";
-          
-function Form() {
+const fetchData = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("publicform")
+      .select()
+      .eq("form_id", id);
 
-  function isPrefilledGoogleFormLink(link) {
-    const pattern =
-      /^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform\?usp=pp_url(&entry\w+=\w+)*$/;
-
-    return pattern.test(link);
-  }
-
-  const navigate = useNavigate();
-  // const authUser = useUser();
-  const [ url, setUrl] = useState("")
-  const [ title, setTitle] = useState("")
-  const [currUser, setCurrUser] = useState("");
-  const [err, setErr] = useState("")
-  useEffect(()=> {
-    // console.log(authUser)
-    if(user) {
-      setCurrUser(user.id)
+    if (error) {
+      console.error("Error fetching data:", error.message);
+      return;
     }
-  },[])
 
-   function clearErrorAfterDelay() {
-     setTimeout(() => {
-       setErr("");
-     }, 5000);
-   }
+    console.log(data); // Verify data received
+
+    if (data && data.length > 0) {
+      
+      setForm(
+        data[0],
+      );
+    }
+  } catch (err) {
+    console.error("Error fetching data:", err.message);
+  }
+};
+
+useEffect(() => {
+  fetchData()
+},[id])
+
+// const { formData, isLoading, error } = useContext(FormDataContext);
+
+// const handleFilter = (formId) => {
+//   return formId === id;
+// };
+// const data = formData.filter((d) => handleFilter(d.form_id));
+
+
+// const formSettings = JSON.parse(localStorage.getItem(id));
 
   useEffect(() => {
-    if(err.length > 0) {
-      clearErrorAfterDelay();
-    }
-  },[err])
+    const formElement = document.getElementById("form");
+    formElement.style.width = form.size + "px";
+  }, [form.size]);
 
 
-    return (
-      <div className=" p-20 z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 h-fit items-center justify-center bg-black-100 rounded-xl border-2 border-white-100">
-        <input
-          type="text"
-          placeholder="Title"
-          className=" w-[360px] outline-none p-2 rounded-lg"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <input
-          type="text"
-          name=""
-          id=""
-          placeholder="form url"
-          className=" w-[360px] outline-none p-2 rounded-lg"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <input
-          type="submit"
-          value={"Submit"}
-          onClick={() => {
-            const res = isPrefilledGoogleFormLink(url);
-            if (res) {
-              preprocess(url)
-                .then((data) => {
-                  console.log("form id : ", data.id);
-                  console.log("form title : ", title);
-                  console.log("action url : ", data.url);
-                  console.log("og url : ", url);
-                  data.entries.forEach((entry) => console.log(entry));
-                  console.log("user id: ", currUser);
-
-                  data.entries.forEach(async (entry) => {
-                    const { res, error } = await supabase
-                      .from("formdata")
-                      .insert([
-                        {
-                          title: title,
-                          form_id: data.id,
-                          uid: currUser,
-                          url: url,
-                          action_url: data.url,
-                          entry_name: entry.entry_name,
-                          entry_id: entry.entry_id,
-                        },
-                      ]);
-                    if (res) {
-                      console.log("Successfully inserted data");
-                    } else {
-                      console.error("Error Occured : ", error);
-                    }
-                  });
-                })
-                .then(() => navigate("/myforms"));
-            } else {
-              setErr("Provide a valid link");
-            }
-          }}
-          className=" bg-white-100 cursor-pointer p-2 rounded-lg"
-        />
-        <p className={`${err.length > 0 ? "block" : "hidden"} text-rose-600`}>
-          {err}
+  return (
+    <div className={` flex items-center justify-center min-h-screen  ${form.bgcolor}`}>
+      <div
+        id="form"
+        className={` flex flex-col gap-6 ${
+          form.color
+        }  text-black-100 p-16 border-2 rounded-xl w-[${form.size + "px"}]`}
+      >
+        <p className="flex items-center justify-center font-semibold text-2xl">
+          {form.title}
         </p>
-      </div>
-    );
-  };
+        <form
+          className=" flex flex-col gap-3 items-center justify-center w-full"
+          action={form.action_url}
+        >
+          {form.entries && form.entries.map((d) => (
+            <div key={d.entry_id} className=" flex flex-col w-full">
+              <p>{d.entry_name}</p>
+              <div className=" w-full">
+                <input
+                  name={d.entry_id}
+                  type="text"
+                  className="outline-none p-3 rounded-md mt-2 w-full "
+                />
+              </div>
+            </div>
+          )) 
+          }
+          <div className=" flex bg-black-100 px-5 py-2 rounded-lg items-center mt-3 justify-center text-white-200">
+            <input type="submit" />
+          </div>
+        </form>
 
-export default Form
+      </div>
+    </div>
+  );
+}
+
+export default Form;

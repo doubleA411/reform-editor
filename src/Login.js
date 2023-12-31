@@ -71,19 +71,19 @@ function Login() {
 
   return (
     <div className=" flex">
-      <div className=" flex-auto">
+      <div className=" flex-1">
         <img
           src={image}
           alt=""
           srcset=""
-          className="h-full w-[812px] relative"
+          className="h-full w-full relative"
         />
         <div className=" flex items-center gap-2 justify-center absolute bottom-0 left-0 p-4 rounded-2xl border-2 m-10 backdrop-blur-md">
           <p className=" text-white-200"> Created by Minimal Mind </p>
-          <img src={mm} alt="" className=" h-[20px]" />
+          <img src={mm} alt="" className=" h-[20px] invert" />
         </div>
       </div>
-      <div className=" flex-auto flex flex-col items-center px-36 justify-center gap-10 bg-black-100 h-screen w-[700px] text-slate-100">
+      <div className=" flex-1/2 flex flex-col items-center px-36 justify-center gap-10 bg-black-100 h-screen w-[700px] text-slate-100">
         <h1 className="text-4xl">reform.</h1>
 
         <div
