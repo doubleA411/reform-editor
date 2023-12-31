@@ -12,7 +12,7 @@ function Home() {
      
       {/* navbar */}
 
-      <div className='h-[700px] mx-10 mb-10 bg-black rounded-xl '></div>
+      <div className=' relative h-[700px] mx-10 mb-10 bg-black rounded-xl '></div>
 
     </div>
   );

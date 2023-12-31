@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import image from "./assets/image.jpeg";
 import mm from './assets/mm.png';
 import { supabase } from './App';
@@ -10,37 +10,63 @@ function Login() {
   const [pass, setPass] = useState("");
   const [exst, setExst] = useState(false)
   const [sent, setSent] = useState(false)
+  const [err, setError] = useState("")
+
+
+  function isValidEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
 
   // Sign up function
   async function signUpNewUser(mail, password) {
-    const {data,error} = await supabase.auth.signUp({
-      email: mail,
-      password: password,
-      
-    })
+    const res = isValidEmail(mail);
 
-    if(data) {
-      console.log(data.user)
-      setSent(true);
-     
+    if(res) {
+       const { data, error } = await supabase.auth.signUp({
+         email: mail,
+         password: password,
+       });
+       if (data) {
+         console.log(data.user);
+         setSent(true);
+       } else {
+         setError(error.message);
+         console.log("Error occured while authenticating user : ", error);
+       }
     } else {
-        console.log("Error occured while authenticating user : ", error);
+      setError("Invalid email address")
     }
     
-
-    
-
+   
   }
 
   // Sign in function
   async function signInWithEmail( mail , password) {
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email: mail,
       password: password,
-    });
-    console.log(data, error);
-
+    })
+   if(error) {
+    setError(error.message)
+   }
+    console.log(data, error)
   }
+
+  function clearErrorAfterDelay() {
+    setTimeout(() => {
+      setError("");
+    }, 5000);
+  }
+
+  useEffect(() => {
+    console.log(err);
+    if(err.length > 0) {
+      clearErrorAfterDelay();
+    }
+
+  },[err])
 
 
   return (
@@ -72,6 +98,7 @@ function Login() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              // onBlur={(e) => isValidEmail(e.target.value) }
             />
           </div>
           <div className=" bg-white-200 text-black-100 w-full py-3 px-5 rounded-xl shadow-md shadow-slate-600 cursor-pointer">
@@ -83,14 +110,16 @@ function Login() {
               onChange={(e) => setPass(e.target.value)}
             />
           </div>
-          <div
+          <button
             className=" bg-black-200 text-white-100 w-fit py-3 px-5 rounded-xl shadow-md backdrop-blur-lg cursor-pointer"
             onClick={() =>
-              exst === true ? signInWithEmail(email, pass) : signUpNewUser(email,pass)
+              exst === true
+                ? signInWithEmail(email, pass)
+                : signUpNewUser(email, pass)
             }
           >
             {exst === true ? "Sign in" : "Sign up"}
-          </div>
+          </button>
 
           <p>
             Already have an account ?{" "}
@@ -106,6 +135,9 @@ function Login() {
         </div>
         <p className={` ${sent === true ? "block" : "hidden"} text-green-300`}>
           Verification mail has been sent
+        </p>
+        <p className={` ${err.length > 0 ? "block" : "hidden"} text-rose-600`}>
+          {err}
         </p>
       </div>
       {/* <div className=" text-sm absolute text-white-100 border-2 m-10 backdrop-blur-md p-4 top-0 left-0 w-fit h-fit rounded-xl">
