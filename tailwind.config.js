@@ -14,13 +14,13 @@ module.exports = {
       },
       backgroundImage: {
         black:
-          "url('/Users/aakashsuresh/Developer/reform/src/assets/image.jpeg')",
-        blue: "url('/Users/aakashsuresh/Developer/reform/src/assets/image2.jpeg')",
+          "url('/src/assets/image.jpeg')",
+        blue: "url('/src/assets/image2.jpeg')",
         purple:
-          "url('/Users/aakashsuresh/Developer/reform/src/assets/image3.jpeg')",
-        redish: "url('/Users/aakashsuresh/Developer/reform/src/assets/image4.jpeg')",
+          "url('/src/assets/image3.jpeg')",
+        redish: "url('/src/assets/image4.jpeg')",
         violet:
-          "url('/Users/aakashsuresh/Developer/reform/src/assets/image5.jpeg')",
+          "url('/src/assets/image5.jpeg')",
       },
     },
   },
