@@ -1,12 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-// import { FormDataContext, FormDataProvider } from "./FormDataContext";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "./supabase";
 
 // {id : form_id, color : color, bgcolor : bgcolor, size : size, title : title, entries : [{},{}...]}
-
-
-
 
  function Preview() {
 
@@ -62,7 +58,7 @@ console.log(form.entries)
   useEffect(() => {
     const formElement = document.getElementById("form");
     formElement.style.width = form.size + "px";
-  }, [id]);
+  }, [form.size]);
 
 
   return (

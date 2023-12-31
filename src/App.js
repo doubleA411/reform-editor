@@ -54,13 +54,17 @@ function App() {
               )
             }
           >
-            <Route path="/" element={!session ? <Login /> : <Home />} />
+            { session && (
+              <>
             <Route path="/editor" element={<Editor />} />
-            <Route path="/preview/:id" element={<Preview />} />
-
             <Route path="/myforms" element={<MyForms />} />
-            <Route path="/login" element={<Login />} />
             <Route path="/createForm" element={<Form />} />
+            <Route path="/" element={<Home />} />
+              </>
+            )}
+            <Route path="/preview/:id" element={<Preview />} />
+            <Route path="/login" element={<Login />} />
+            <Route path='*' element={<Login />} />
           </Route>
         </Routes>
       </div>
