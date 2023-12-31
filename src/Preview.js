@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FormDataContext, FormDataProvider } from "./FormDataContext";
+// import { FormDataContext, FormDataProvider } from "./FormDataContext";
 import { useParams } from "react-router-dom";
 import { supabase } from "./supabase";
 
@@ -104,7 +104,7 @@ console.log(form.entries)
 }
 
 export default () => (
-  <FormDataProvider>
+ 
     <Preview />
-  </FormDataProvider>
+ 
 );
