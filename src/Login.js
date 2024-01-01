@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import image from "./assets/image.jpeg";
 import mm from './assets/mm.png';
-import { supabase } from './App';
+import { supabase } from './supabase';
 
 
 function Login() {
@@ -21,19 +21,28 @@ function Login() {
   // Sign up function
   async function signUpNewUser(mail, password) {
     const res = isValidEmail(mail);
-
     if(res) {
-       const { data, error } = await supabase.auth.signUp({
-         email: mail,
-         password: password,
-       });
-       if (data) {
-         console.log(data.user);
-         setSent(true);
-       } else {
-         setError(error.message);
-         console.log("Error occured while authenticating user : ", error);
-       }
+      // const { data : auth , error : authErr} = await supabase.from('auth.user').select("email").eq('email',mail);
+      // console.log(auth)
+     
+
+        const { data, error } = await supabase.auth.signUp({
+          email: mail,
+          password: password,
+        });
+  
+        if (data) {
+          if(data.user.identities.length === 0) {
+            setError("User already exists")
+          } else {
+            console.log(data.user);
+            setSent(true);
+          }
+        } else {
+          setError(error.message);
+          console.log("Error occured while authenticating user : ", error);
+        }
+      
     } else {
       setError("Invalid email address")
     }

@@ -15,12 +15,15 @@ const { data : { user } } = await supabase.auth.getUser();
           
 function AddForm() {
 
-  function isPrefilledGoogleFormLink(link) {
-    const pattern =
-      /^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform\?usp=pp_url(&entry\w+=\w+)*$/;
+  
+function isPrefilledGoogleFormLink(link) {
+  const pattern =
+    /^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform\?usp=pp_url/;
 
-    return pattern.test(link);
-  }
+  console.log(pattern.test(link));
+  return pattern.test(link);
+}
+
 
   const navigate = useNavigate();
   // const authUser = useUser();

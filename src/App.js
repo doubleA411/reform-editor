@@ -11,14 +11,7 @@ import { createClient } from "@supabase/supabase-js";
 import Preview from './Preview';
 import AddForm from './AddForm';
 import Submit from './Submit';
-
-const sb_url = process.env.REACT_APP_SB_URL
-const sb_key = process.env.REACT_APP_SB_KEY
-
-export const supabase = createClient(
-  sb_url,
-  sb_key
-);
+import { supabase } from './supabase';
 
 
 

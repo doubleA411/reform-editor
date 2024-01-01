@@ -5,100 +5,151 @@ import { supabase } from './supabase';
 import { FormDataContext, FormDataProvider } from "./FormDataContext";
 
 function Editor() {
+  const urlParams = new URLSearchParams(window.location.search);
 
-const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get("id");
 
-const id = urlParams.get('id');
-// console.log(id)
+  const { formData, isLoading, error } = useContext(FormDataContext);
 
-const { formData, isLoading, error } = useContext(FormDataContext);
-
-const handleFilter = (formId) => {
-  return formId === id;
-};
-const data = formData.filter((d) => handleFilter(d.form_id));
-// console.log(data[0].entries)
-
-const [form, setForm] = useState({
-  color: "bg-yellow",
-  size: 390,
-  bgcolor: "bg-black",
-  title: data[0].title,
-  entries : data[0].entries,
-  form_id : id,
-  action_url : data[0].action_url
-  
-});
-
-const handleForm = (e) => {
-  setForm({
-        ...form,
-        [e.target.name] : e.target.value
-  })
-}
-
-const handleDraft = async () => {
-  const formSettings = localStorage.getItem(id);
-  if(formSettings){
-    localStorage.removeItem(id)
-  localStorage.setItem(id, JSON.stringify(form));
-
-  } else {
-
-    localStorage.setItem(id,JSON.stringify(form))
-  }
-
-  const { res, error } = await supabase.from("publicform").insert([
-    {
-      color: form.color,
-      size: form.size,
-      bgcolor: form.bgcolor,
-      title: data[0].title,
-      entries: data[0].entries,
-      form_id: id,
-      action_url: data[0].action_url,
-    },
-  ]);
-  if(res) {
-    console.log(res)
-  } else {
-    console.log(error)
-  }
-}
-
-
-const handleSettings = () => {
- const formSettings = localStorage.getItem(id);
- if (formSettings) {
-   console.log(JSON.parse(formSettings));
-   setForm(JSON.parse(formSettings));
-   console.log(form)
- }
-}
-  //  const data = localStorage.getItem("formdata");
+  const handleFilter = (formId) => {
+    return formId === id;
+  };
+  const data = formData.filter((d) => handleFilter(d.form_id));
 
 
 
- useEffect(() => {
-   handleSettings();
- }, []);
- 
+
+
+
+
+  const [preview, setPreview] = useState(false);
+
+  useEffect(() => {
+    const fetchPreview = async () => {
+      const { data: checkData, error } = await supabase
+        .from("publicform")
+        .select("form_id")
+        .eq("form_id", id);
+      if (error) {
+        throw error; // Handle any errors appropriately
+      }
+      setPreview(checkData.length > 0); // Set preview to true if data exists
+    };
+
+    fetchPreview();
+  }, []); //
+
+  useEffect(() => {
+    console.log(preview);
+  },[preview])
+
+
+
+
+
+
+  const [form, setForm] = useState({
+    color: "bg-yellow",
+    size: 390,
+    bgcolor: "bg-black",
+    title: data[0].title,
+    entries: data[0].entries,
+    form_id: id,
+    action_url: data[0].action_url,
+  });
+
+  const handleForm = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleDraft = async () => {
+    const formSettings = localStorage.getItem(id);
+    if (formSettings) {
+      localStorage.removeItem(id);
+      localStorage.setItem(id, JSON.stringify(form));
+    } else {
+      localStorage.setItem(id, JSON.stringify(form));
+    }
+
+    const { data: existingData, err } = await supabase
+      .from("publicform")
+      .select("form_id")
+      .eq("form_id", id);
+
+    if (err) {
+      throw error;
+    }
+
+    if (existingData.length === 0) {
+      const { res,  error } = await supabase
+        .from("publicform")
+        .insert([
+          {
+            color: form.color,
+            size: form.size,
+            bgcolor: form.bgcolor,
+            title: data[0].title,
+            entries: data[0].entries,
+            form_id: id,
+            action_url: data[0].action_url,
+          },
+        ])
+        setPreview(true)
+      if (res) {
+        console.log(res);
+      } else {
+        console.log(error);
+      }
+    } else {
+      const { data: updatedData, error: updateErr } = await supabase
+        .from("publicform")
+        .update([
+          {
+            color: form.color,
+            size: form.size,
+            bgcolor: form.bgcolor,
+          },
+        ])
+        .eq("form_id", id)
+        .select();
+      if (updateErr) {
+        throw updateErr;
+      } else {
+        console.log(updatedData);
+      }
+    }
+  };
+
+  const handleSettings = () => {
+    const formSettings = localStorage.getItem(id);
+    if (formSettings) {
+      console.log(JSON.parse(formSettings));
+      setForm(JSON.parse(formSettings));
+      console.log(form);
+    }
+  };
+
+  useEffect(() => {
+    handleSettings();
+  }, []);
+
   useEffect(() => {
     const formElement = document.getElementById("form");
     formElement.style.width = form.size + "px";
   }, [form]);
 
-
-
- 
-  const colors = ['bg-red','bg-cyan','bg-yellow','bg-barbie','bg-slate-200', 'backdrop-blur-md']
-  const bg = [
-    "bg-black",
-    'bg-blue',
-    'bg-redish',
-    'bg-purple',
-    'bg-violet'
+  const colors = [
+    "bg-red",
+    "bg-cyan",
+    "bg-yellow",
+    "bg-barbie",
+    "bg-slate-200",
+    "backdrop-blur-md",
   ];
+  const bg = ["bg-black", "bg-blue", "bg-redish", "bg-purple", "bg-violet"];
   return (
     <div className=" flex flex-col">
       <div className=" h-[1px] bg-black-100 mt-2"> </div>
@@ -159,7 +210,7 @@ const handleSettings = () => {
               id="bgcolor"
               className=" outline-none p-2 w-full"
               onChange={(e) => handleForm(e)}
-              value={form.bg}
+              value={form.bgcolor}
             >
               {bg.map((c, idx) => (
                 <option key={idx} value={c}>
@@ -218,11 +269,15 @@ const handleSettings = () => {
                 </div>
               </form>
 
-              <a href={`/preview/${id}`}>
-                <div className=" absolute bottom-5 right-5 text-white-200  py-3 px-10 backdrop-blur-xl rounded-xl cursor-pointer border-2 ">
-                  Preview
-                </div>
-              </a>
+              { preview &&
+                <a href={`/preview/${id}`}>
+                  <div
+                    className={` absolute bottom-5 right-5 text-white-200  py-3 px-10 backdrop-blur-xl rounded-xl cursor-pointer border-2 `}
+                  >
+                    Preview
+                  </div>
+                </a>
+              }
             </div>
           </div>
         </div>
