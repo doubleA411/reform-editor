@@ -1,27 +1,40 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { supabase } from './supabase';
+// import { FormDataProvider, FormDataContext } from "./FormDataContext";
 
-async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if(error) {
-    console.log("Error occured: ",error)
-  }
-}
-const {
-  data: { user },
-} = await supabase.auth.getUser();
+
+
+
+
 
 function Navbar() {
 
-const [ email, setEmail ] = useState("");
-const [showDropdown, setShowDropdown] = useState(false);
+const [userData, setUser] = useState({});  
+
+const getUser = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  setUser(user);
+
+}
 
 useEffect(() => {
-  if (user) {
-    setEmail(user.email);
+  getUser();
+},[userData])
+
+const [showDropdown, setShowDropdown] = useState(false);
+
+async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.log("Error occured: ", error);
   }
-}, [user]);
+}
+
+
 
 const toggleDropdown = () => {
   setShowDropdown((prev) => !prev);
@@ -31,11 +44,7 @@ const handleSignOut = async () => {
   await signOut();
   // Additional logic after sign-out if needed
 };
-  useEffect(() => {
-    if(user) {
-      setEmail(user.email);
-    }
-  },[])
+
 
 
   return (
@@ -48,7 +57,7 @@ const handleSignOut = async () => {
         <Link to={"/myforms"}>
           <p className=" cursor-pointer">My Forms</p>
         </Link>
-        <p onClick={toggleDropdown} className=' cursor-pointer'>{email}</p>
+        <p onClick={toggleDropdown} className=' cursor-pointer'>{userData && userData.email}</p>
         {showDropdown && (
           <div className=" z-20 absolute top-10 right-0 bg-white-100 border rounded-md shadow-lg m-10">
             <p
@@ -64,4 +73,4 @@ const handleSignOut = async () => {
   );
 }
 
-export default Navbar
+export default Navbar;

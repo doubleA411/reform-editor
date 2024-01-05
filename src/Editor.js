@@ -2,27 +2,24 @@ import React from 'react'
 import { useState, useEffect, useContext } from "react";
 import { supabase } from './supabase';
 
-import { FormDataContext, FormDataProvider } from "./FormDataContext";
+import { FormDataContext } from "./FormDataContext";
 
 function Editor() {
+  const formData =  useContext(FormDataContext);
   const urlParams = new URLSearchParams(window.location.search);
 
   const id = urlParams.get("id");
 
-  const { formData, isLoading, error } = useContext(FormDataContext);
-
-  const handleFilter = (formId) => {
-    return formId === id;
-  };
-  const data = formData.filter((d) => handleFilter(d.form_id));
-
-
-
-
-
-
-
+  // console.log(formData)
+  const [data, setData] = useState({});
   const [preview, setPreview] = useState(false);
+
+  useEffect(() => {
+    if (formData.length > 0 ){
+      setData(formData[0])
+    }
+  },[formData])
+
 
   useEffect(() => {
     const fetchPreview = async () => {
@@ -52,10 +49,10 @@ function Editor() {
     color: "bg-yellow",
     size: 390,
     bgcolor: "bg-black",
-    title: data[0].title,
-    entries: data[0].entries,
+    title: data.title,
+    entries: data.entries,
     form_id: id,
-    action_url: data[0].action_url,
+    action_url: data.action_url,
   });
 
   const handleForm = (e) => {
@@ -80,7 +77,7 @@ function Editor() {
       .eq("form_id", id);
 
     if (err) {
-      throw error;
+      throw err;
     }
 
     if (existingData.length === 0) {
@@ -164,7 +161,7 @@ function Editor() {
               type="text"
               placeholder="Title"
               className="w-full outline-none disabled:bg-transparent"
-              value={data[0].title}
+              value={data.title}
             />
           </div>
           {/* title */}
@@ -234,25 +231,25 @@ function Editor() {
         <div className=" w-3/4">
           <div
             id="formbg"
-            className={` flex items-center justify-center h-[700px] ${form.bgcolor} border-2 m-10 rounded-xl relative`}
+            className={` flex items-center  justify-center h-[700px] ${form.bgcolor} border-2 m-10 rounded-xl relative`}
           >
             <div
               id="form"
-              className={` flex flex-col gap-6 ${
+              className={` scale-75 flex flex-col h-fit  gap-5 ${
                 form.color
-              }  text-black-100 p-16 border-2 rounded-xl w-[${
+              }  text-black-100 px-16 py-10 border-2 rounded-xl w-[${
                 form.size + "px"
               }]`}
             >
               <p className="flex items-center justify-center font-semibold text-2xl">
-                {data[0].title}
+                {data && data.title}
               </p>
 
               <form
-                className=" flex flex-col gap-3 items-center justify-center w-full"
-                action={data[0].action_url}
+                className=" flex flex-col gap-3 items-center overflow-scroll justify-center w-full"
+                action={data && data.action_url}
               >
-                {data[0].entries.map((d) => (
+                {data && data.entries && data.entries.map((d) => (
                   <div key={d.entry_id} className=" flex flex-col w-full">
                     <p>{d.entry_name}</p>
                     <div className=" w-full">
@@ -268,17 +265,16 @@ function Editor() {
                   <input type="submit" />
                 </div>
               </form>
-
-              { preview &&
-                <a href={`/preview/${id}`}>
-                  <div
-                    className={` absolute bottom-5 right-5 text-white-200  py-3 px-10 backdrop-blur-xl rounded-xl cursor-pointer border-2 `}
-                  >
-                    Preview
-                  </div>
-                </a>
-              }
             </div>
+            {preview && (
+              <a href={`/preview/${id}`}>
+                <div
+                  className={` absolute bottom-5 right-5 text-white-200  py-3 px-10 backdrop-blur-xl rounded-xl cursor-pointer border-2 `}
+                >
+                  Preview
+                </div>
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -286,8 +282,4 @@ function Editor() {
   );
 }
 
-export default () => (
-  <FormDataProvider>
-    <Editor />
-  </FormDataProvider>
-);
+export default Editor;

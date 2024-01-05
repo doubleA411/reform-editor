@@ -11,8 +11,10 @@ import { useNavigate } from 'react-router-dom'
 const { data : { user } } = await supabase.auth.getUser();
 
 
-// const form = "https://docs.google.com/forms/d/e/1FAIpQLSe6QkinSfvuI6P5Dg-L-J9uAAEeL9AMV2uBQViT0H3nuntF-Q/viewform?usp=pp_url&entry.469246373=Name&entry.1403942219=Unique+ID&entry.829537125=Email+ID&entry.1178935119=Phone+number";
-          
+// const form = "
+
+// https://docs.google.com/forms/d/e/1FAIpQLSe6QkinSfvuI6P5Dg-L-J9uAAEeL9AMV2uBQViT0H3nuntF-Q/viewform?usp=pp_url&entry.469246373=Name&entry.1403942219=Unique+ID&entry.829537125=Email+ID&entry.1178935119=Phone+number";
+
 function AddForm() {
 
   
@@ -23,6 +25,8 @@ function isPrefilledGoogleFormLink(link) {
   console.log(pattern.test(link));
   return pattern.test(link);
 }
+
+
 
 
   const navigate = useNavigate();
@@ -51,6 +55,25 @@ function isPrefilledGoogleFormLink(link) {
   },[err])
 
 
+  const addData = async (url) => {
+    const formData = await  preprocess(url);
+    const { data, error } = await supabase.from("formdata").insert([
+      {
+        form_id: formData.id,
+        url: url,
+        action_url: formData.url,
+        entries: formData.entries,
+        title: title,
+        uid: currUser,
+      },
+    ]);
+    if (error) {
+      console.log(error);
+    }
+    console.log(data, "Success");
+  };
+
+
     return (
       <div className=" p-20 z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 h-fit items-center justify-center bg-black-100 rounded-xl border-2 border-white-100">
         <input
@@ -72,45 +95,9 @@ function isPrefilledGoogleFormLink(link) {
         <input
           type="submit"
           value={"Submit"}
-          onClick={() => {
-            const res = isPrefilledGoogleFormLink(url);
-            if (res) {
-              preprocess(url)
-                .then((data) => {
-                  console.log("form id : ", data.id);
-                  console.log("form title : ", title);
-                  console.log("action url : ", data.url);
-                  console.log("og url : ", url);
-                  data.entries.forEach((entry) => console.log(entry));
-                  console.log("user id: ", currUser);
-
-                  data.entries.forEach(async (entry) => {
-                    const { res, error } = await supabase
-                      .from("formdata")
-                      .insert([
-                        {
-                          title: title,
-                          form_id: data.id,
-                          uid: currUser,
-                          url: url,
-                          action_url: data.url,
-                          entry_name: entry.entry_name,
-                          entry_id: entry.entry_id,
-                        },
-                      ]);
-                    if (res) {
-                      console.log("Successfully inserted data");
-                    } else {
-                      console.error("Error Occured : ", error);
-                    }
-                  });
-                })
-                .then(() => navigate("/myforms"));
-            } else {
-              setErr("Provide a valid link");
-            }
-          }}
           className=" bg-white-100 cursor-pointer p-2 rounded-lg"
+          onClick={() => addData(url)}
+
         />
         <p className={`${err.length > 0 ? "block" : "hidden"} text-rose-600`}>
           {err}

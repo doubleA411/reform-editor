@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import image from "./assets/image.jpeg";
 import mm from './assets/mm.png';
 import { supabase } from './supabase';
+import { Link, useNavigate,  } from 'react-router-dom';
 
 
 function Login() {
@@ -9,15 +10,33 @@ function Login() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [exst, setExst] = useState(false)
-  const [sent, setSent] = useState(false)
+  const [sent, setSent] = useState("")
   const [err, setError] = useState("")
+  
 
+  const navigate = useNavigate();
 
   function isValidEmail(email) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   }
 
+  const resetPassword = async (mail) => {
+    const valid = isValidEmail(mail);
+
+    if(valid) {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(mail, {
+        redirectTo: "http://localhost:3000/reset-password",
+      });
+      if(error) {
+        console.error(error)
+      } 
+      setSent("Password reset mail has been sent to your mail")
+    } else {
+      setError("Provide a valid Email")
+    }
+
+  }
   // Sign up function
   async function signUpNewUser(mail, password) {
     const res = isValidEmail(mail);
@@ -36,7 +55,7 @@ function Login() {
             setError("User already exists")
           } else {
             console.log(data.user);
-            setSent(true);
+            setSent("Verification mail has been sent");
           }
         } else {
           setError(error.message);
@@ -61,6 +80,9 @@ function Login() {
     setError(error.message)
    }
     console.log(data, error)
+    return data
+    
+
   }
 
   function clearErrorAfterDelay() {
@@ -81,12 +103,7 @@ function Login() {
   return (
     <div className=" flex">
       <div className=" flex-1">
-        <img
-          src={image}
-          alt=""
-          srcset=""
-          className="h-full w-full relative"
-        />
+        <img src={image} alt="" srcset="" className="h-full w-full relative" />
         <div className=" flex items-center gap-2 justify-center absolute bottom-0 left-0 p-4 rounded-2xl border-2 m-10 backdrop-blur-md">
           <p className=" text-white-200"> Created by Minimal Mind </p>
           <img src={mm} alt="" className=" h-[20px] invert" />
@@ -97,7 +114,7 @@ function Login() {
 
         <div
           className={` ${
-            sent === true ? "hidden" : "flex"
+            sent ? "hidden" : "flex"
           } flex-col gap-3 items-center w-full`}
         >
           <div className=" bg-white-200 text-black-100 w-full py-3 px-5 rounded-xl shadow-md shadow-slate-600 cursor-pointer">
@@ -119,6 +136,14 @@ function Login() {
               onChange={(e) => setPass(e.target.value)}
             />
           </div>
+
+          <div
+            className=" cursor-pointer"
+            onClick={() => resetPassword(email)}
+          >
+            <p className=" text-sm">Forgot Password ?</p>
+          </div>
+
           <button
             className=" bg-black-200 text-white-100 w-fit py-3 px-5 rounded-xl shadow-md backdrop-blur-lg cursor-pointer"
             onClick={() =>
@@ -142,9 +167,7 @@ function Login() {
             </span>
           </p>
         </div>
-        <p className={` ${sent === true ? "block" : "hidden"} text-green-300`}>
-          Verification mail has been sent
-        </p>
+        <p className={` ${sent ? "block" : "hidden"} text-green-300`}>{sent}</p>
         <p className={` ${err.length > 0 ? "block" : "hidden"} text-rose-600`}>
           {err}
         </p>

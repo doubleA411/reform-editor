@@ -1,38 +1,25 @@
-import { useContext} from 'react'
+import { useContext, useEffect, useState} from 'react'
 import edit from "./assets/edit.png";
 import link from "./assets/link.png";
 // import { supabase } from './supabase';
-import { FormDataContext, FormDataProvider } from "./FormDataContext";
-
-// import { Link } from 'react-router-dom';
-
-
-// const {
-//   data: { user },
-// } = await supabase.auth.getUser();
-
+import { FormDataContext } from "./FormDataContext";
 
 
 function FormData() {
 
-   const { formData, isLoading, error } = useContext(FormDataContext);
-
-   
-
-
-   // const [ authUser, setUser ] = useState("");
-   
-
-//  useEffect(() => {
-//   setData(formData)
-//   //  console.log("New data from context:", formData);
-//  }, [data]);
-
+   const formData = useContext(FormDataContext);
+  const [data, setData] = useState();
+useEffect(() => {
+  if (formData.length > 0) {
+    setData(formData);
+  }
+}, [formData]);
+  //  console.log(formData)
 
   return (
     <div className="flex flex-wrap gap-6">
-      {formData &&
-        formData.map((formDataObj) => (
+      {data &&
+        data.map((formDataObj) => (
           <div
             key={formDataObj.form_id}
             className="flex items-center justify-center w-fit gap-20 bg-white-200 px-7 py-7 rounded-3xl"
@@ -48,13 +35,9 @@ function FormData() {
             </div>
           </div>
         ))}
-      {!formData && <p>No data</p>}
+      {!data && <p>Loading Data.....</p>}
     </div>
   );
 }
 
-export default () => (
-  <FormDataProvider>
-   <FormData />
-  </FormDataProvider>
-);
+export default FormData
