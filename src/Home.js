@@ -3,6 +3,7 @@ import CreateBtn from './CreateBtn';
 import img from './assets/mm.png';
 import logo from "./assets/reform-logo@4x.png";
 import me from './assets/me.png'
+import {motion} from 'framer-motion'
 
 import { FormDataContext } from './FormDataContext';
 
@@ -16,7 +17,11 @@ function Home() {
   
 
   return (
-    <div className=" flex flex-col">
+    <motion.div
+    exit={{opacity: 0}}
+    initial={{opacity:0}}
+    animate={{opacity:1}}
+     className=" flex flex-col">
       {/* create btn */}
       <CreateBtn />
 
@@ -75,7 +80,7 @@ function Home() {
           </marquee>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

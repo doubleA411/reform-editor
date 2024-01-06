@@ -13,6 +13,7 @@ import Submit from './Submit';
 import { supabase } from './supabase';
 import ResetPass from './ResetPass';
 import { FormDataProvider } from './FormDataContext';
+import { AnimatePresence, motion} from 'framer-motion'
 
 
 
@@ -40,6 +41,7 @@ function App() {
     <FormDataProvider>
       <Router>
         <div className=" bg-slate-100 min-h-screen xs:hidden sm:hidden md:hidden lg:block">
+          <AnimatePresence>
           <Routes>
             <Route
               element={
@@ -68,6 +70,7 @@ function App() {
               <Route path="*" element={<Login />} />
             </Route>
           </Routes>
+          </AnimatePresence>
         </div>
       </Router>
     </FormDataProvider>

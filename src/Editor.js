@@ -1,8 +1,10 @@
 import React from 'react'
 import { useState, useEffect, useContext } from "react";
 import { supabase } from './supabase';
+import { motion } from 'framer-motion'
 
 import { FormDataContext } from "./FormDataContext";
+import { FramerLoading } from './Loading';
 
 function Editor() {
   const formData =  useContext(FormDataContext);
@@ -148,7 +150,12 @@ function Editor() {
   ];
   const bg = ["bg-black", "bg-blue", "bg-redish", "bg-purple", "bg-violet"];
   return (
-    <div className=" flex flex-col">
+    <motion.div
+      exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className=" flex flex-col"
+    >
       <div className=" h-[1px] bg-black-100 mt-2"> </div>
       <div className=" flex">
         {/* tools */}
@@ -249,18 +256,21 @@ function Editor() {
                 className=" flex flex-col gap-3 items-center overflow-scroll justify-center w-full"
                 action={data && data.action_url}
               >
-                {data && data.entries && data.entries.map((d) => (
-                  <div key={d.entry_id} className=" flex flex-col w-full">
-                    <p>{d.entry_name}</p>
-                    <div className=" w-full">
-                      <input
-                        name={d.entry_id}
-                        type="text"
-                        className="outline-none p-3 rounded-md mt-2 w-full "
-                      />
+                {data &&
+                  data.entries &&
+                  data.entries.map((d) => (
+                    <div key={d.entry_id} className=" flex flex-col w-full">
+                      <p>{d.entry_name}</p>
+                      <div className=" w-full">
+                        <input
+                          name={d.entry_id}
+                          type="text"
+                          className="outline-none p-3 rounded-md mt-2 w-full "
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+
                 <div className=" flex bg-black-100 px-5 py-2 rounded-lg items-center mt-3 justify-center text-white-200">
                   <input type="submit" />
                 </div>
@@ -278,7 +288,7 @@ function Editor() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

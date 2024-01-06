@@ -3,6 +3,7 @@ import edit from "./assets/edit.png";
 import link from "./assets/link.png";
 // import { supabase } from './supabase';
 import { FormDataContext } from "./FormDataContext";
+import { FramerLoading } from './Loading';
 
 
 function FormData() {
@@ -34,8 +35,11 @@ useEffect(() => {
               <img src={link} alt="" className="h-[20px]" />
             </div>
           </div>
-        ))}
-      {!data && <p>Loading Data.....</p>}
+        ))} 
+      {!data && <FramerLoading />}
+      {/* <div className=' flex flex-col items-center justify-center'>
+        <FramerLoading />
+      </div> */}
     </div>
   );
 }
