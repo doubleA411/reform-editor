@@ -50,7 +50,7 @@ function Home() {
             Hey there, welcome aboard! Get ready to dive into something awesome
           </div>
         </div>
-        <div className=" flex-auto bg-white-100 w-full p-24 rounded-md text-2xl"></div>
+        {/* <div className=" flex-auto bg-white-100 w-full p-24 rounded-md text-2xl"></div> */}
 
         <div className=" flex-auto bg-white-100 w-full h-fit rounded-md text-2xl">
           <marquee
@@ -63,19 +63,19 @@ function Home() {
             loop="10"
           >
             <div className=" flex items-center">
-              <p>Content to be added</p>
+              <p>Only text fields are supported</p>
               <img src={img} alt="" className=" scale-50" />
-              <p>Content to be added</p>
+              <p>Only text fields are supported</p>
               <img src={img} alt="" className=" scale-50" />
-              <p>Content to be added</p>
+              <p>Only text fields are supported</p>
               <img src={img} alt="" className=" scale-50" />
-              <p>Content to be added</p>
+              <p>Only text fields are supported</p>
               <img src={img} alt="" className=" scale-50" />
-              <p>Content to be added</p>
+              <p>Only text fields are supported</p>
               <img src={img} alt="" className=" scale-50" />
-              <p>Content to be added</p>
+              <p>Only text fields are supported</p>
               <img src={img} alt="" className=" scale-50" />
-              <p>Content to be added</p>
+              <p>Only text fields are supported</p>
             </div>
           </marquee>
         </div>

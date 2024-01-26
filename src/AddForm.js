@@ -16,7 +16,6 @@ const { data : { user } } = await supabase.auth.getUser();
 // https://docs.google.com/forms/d/e/1FAIpQLSe6QkinSfvuI6P5Dg-L-J9uAAEeL9AMV2uBQViT0H3nuntF-Q/viewform?usp=pp_url&entry.469246373=Name&entry.1403942219=Unique+ID&entry.829537125=Email+ID&entry.1178935119=Phone+number";
 
 function AddForm() {
-
   
 function isPrefilledGoogleFormLink(link) {
   const pattern =
@@ -30,6 +29,8 @@ function isPrefilledGoogleFormLink(link) {
 
 
   const navigate = useNavigate();
+  const [msg, setMsg] = useState("");
+
   // const authUser = useUser();
   const [ url, setUrl] = useState("")
   const [ title, setTitle] = useState("")
@@ -57,6 +58,7 @@ function isPrefilledGoogleFormLink(link) {
 
   const addData = async (url) => {
     const formData = await  preprocess(url);
+
     const { data, error } = await supabase.from("formdata").insert([
       {
         form_id: formData.id,
@@ -69,6 +71,7 @@ function isPrefilledGoogleFormLink(link) {
     ]);
     if (error) {
       console.log(error);
+      setErr(error.message)
     }
     console.log(data, "Success");
   };
@@ -96,11 +99,22 @@ function isPrefilledGoogleFormLink(link) {
           type="submit"
           value={"Submit"}
           className=" bg-white-100 cursor-pointer p-2 rounded-lg"
-          onClick={() => addData(url)}
-
+          onClick={() => {
+            const link = isPrefilledGoogleFormLink(url);
+            if (link === true) {
+              addData(url).then(() => {
+                setMsg("Form added. Go to My Forms to edit and share");
+              });
+            } else {
+              // setErr("Provide a valid link");
+            }
+          }}
         />
         <p className={`${err.length > 0 ? "block" : "hidden"} text-rose-600`}>
           {err}
+        </p>
+        <p className={`${msg.length > 0 ? "block" : "hidden"} text-green-600`}>
+          {msg}
         </p>
       </div>
     );

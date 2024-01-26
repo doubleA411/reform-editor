@@ -18,7 +18,11 @@ function Editor() {
 
   useEffect(() => {
     if (formData.length > 0 ){
-      setData(formData[0])
+      const form = formData.filter((e) => 
+        e.form_id === id
+      )
+      setData(form[0])
+      console.log(form)
     }
   },[formData])
 
@@ -90,10 +94,10 @@ function Editor() {
             color: form.color,
             size: form.size,
             bgcolor: form.bgcolor,
-            title: data[0].title,
-            entries: data[0].entries,
+            title: data.title,
+            entries: data.entries,
             form_id: id,
-            action_url: data[0].action_url,
+            action_url: data.action_url,
           },
         ])
         setPreview(true)
